@@ -1,4 +1,4 @@
-package main.java.com.empresa.bpm.service.impl;
+package com.empresa.bpm.service.impl;
 
 import com.empresa.bpm.service.ProcesoService;
 import org.camunda.bpm.engine.RuntimeService;

@@ -1,4 +1,4 @@
-package main.java.com.empresa.bpm.controller;
+package com.empresa.bpm.controller;
 
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.task.Task;
@@ -43,6 +43,6 @@ public class TareaController {
 
     @PostMapping("/iniciar")
     public String iniciarProceso(@RequestBody Map<String, Object> variables) {
-        return procesoService.iniciarProceso("proceso_solicitud_vacaciones", variables);
+        return procesoService.iniciarProceso("solicitud_vacaciones", variables);
     }
 }

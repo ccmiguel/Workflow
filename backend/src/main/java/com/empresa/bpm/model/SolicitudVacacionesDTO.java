@@ -1,4 +1,4 @@
-package main.java.com.empresa.bpm.model;
+package com.empresa.bpm.model;
 
 public class SolicitudVacacionesDTO {
     private String empleado;

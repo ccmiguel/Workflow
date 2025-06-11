@@ -1,0 +1,5 @@
+com\empresa\bpm\controller\TareaController.class
+com\empresa\bpm\service\impl\ProcesoServiceImpl.class
+com\empresa\bpm\model\SolicitudVacacionesDTO.class
+com\empresa\bpm\BpmApplication.class
+com\empresa\bpm\service\ProcesoService.class

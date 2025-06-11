@@ -1,4 +1,5 @@
-package main.java.com.empresa.bpm.service;
+package com.empresa.bpm.service;
+
 
 import java.util.Map;
 

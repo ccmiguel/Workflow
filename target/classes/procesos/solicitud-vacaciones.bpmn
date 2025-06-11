@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  xmlns:activiti="http://activiti.org/bpmn"
+                  xmlns:flowable="http://flowable.org/bpmn"
+                  xmlns:zeebe="http://zeebe.io/bpmn"
+                  id="Definitions_1"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+
+  <bpmn:process id="solicitud_vacaciones" name="Solicitud de Vacaciones" isExecutable="true"
+                camunda:historyTimeToLive="180" camunda:versionTag="1.0.0" camunda:initiatorVariableName="initiator">
+
+<!--       <bpmn:extensionElements> -->
+<!--         <camunda:historyTimeToLive>8</camunda:historyTimeToLive> -->
+<!--       </bpmn:extensionElements> -->
+
+      <bpmn:startEvent id="startEvent" name="Inicio"/>
+      <bpmn:sequenceFlow id="flow1" sourceRef="startEvent" targetRef="tarea1"/>
+      <bpmn:userTask id="tarea1" name="Revisar solicitud" camunda:assignee="admin"/>
+      <bpmn:endEvent id="endEvent" name="Fin"/>
+      <bpmn:sequenceFlow id="flow2" sourceRef="tarea1" targetRef="endEvent"/>
+    </bpmn:process>
+
+    <bpmndi:BPMNDiagram id="BPMNDiagram_solicitud_vacaciones">
+        <bpmndi:BPMNPlane id="BPMNPlane_solicitud_vacaciones" bpmnElement="proceso_solicitud_vacaciones">
+
+          <bpmndi:BPMNShape id="startEvent_shape" bpmnElement="startEvent">
+            <dc:Bounds x="100" y="100" width="36" height="36"/>
+          </bpmndi:BPMNShape>
+
+          <bpmndi:BPMNShape id="tarea1_shape" bpmnElement="tarea1">
+            <dc:Bounds x="200" y="90" width="100" height="80"/>
+          </bpmndi:BPMNShape>
+
+          <bpmndi:BPMNShape id="endEvent_shape" bpmnElement="endEvent">
+            <dc:Bounds x="350" y="100" width="36" height="36"/>
+          </bpmndi:BPMNShape>
+
+          <bpmndi:BPMNEdge id="flow1_edge" bpmnElement="flow1">
+            <di:waypoint x="136" y="118"/>
+            <di:waypoint x="200" y="130"/>
+          </bpmndi:BPMNEdge>
+
+          <bpmndi:BPMNEdge id="flow2_edge" bpmnElement="flow2">
+            <di:waypoint x="300" y="130"/>
+            <di:waypoint x="350" y="118"/>
+          </bpmndi:BPMNEdge>
+
+        </bpmndi:BPMNPlane>
+      </bpmndi:BPMNDiagram>
+
+
+</bpmn:definitions>
