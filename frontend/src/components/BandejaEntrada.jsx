@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useState } from 'react';
 import api from '../services/api';
 
@@ -6,7 +7,7 @@ function BandejaEntrada({ usuario }) {
 
   useEffect(() => {
     api.get(`/tareas/${usuario}`).then(res => setTareas(res.data));
-  }, []);
+  }, [usuario]);
 
   const completar = (id) => {
     api.post(`/tareas/${id}/completar`, { aprobado: true });

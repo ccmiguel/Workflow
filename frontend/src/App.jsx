@@ -1,10 +1,10 @@
-import BandejaEntrada from './components/BandejaEntrada';
+import React from 'react';
+import SeleccionUsuario from './components/SeleccionUsuario';
 
 function App() {
   return (
     <div>
-      <h1>RRHH - Bandeja de Entrada</h1>
-      <BandejaEntrada usuario="rrhh" />
+      <SeleccionUsuario />
     </div>
   );
 }
