@@ -19,6 +19,8 @@ public class SolicitudVacacionesDTO {
 
     private String motivo;
 
+    private String usuarioAsignado;
+
     // Getters y Setters
     public String getCiEmpleado() { return ciEmpleado; }
     public void setCiEmpleado(String ciEmpleado) { this.ciEmpleado = ciEmpleado; }
@@ -31,4 +33,12 @@ public class SolicitudVacacionesDTO {
 
     public String getMotivo() { return motivo; }
     public void setMotivo(String motivo) { this.motivo = motivo; }
+
+    public String getUsuarioAsignado() { // 👈 GETTER NUEVO
+        return usuarioAsignado;
+    }
+
+    public void setUsuarioAsignado(String usuarioAsignado) { // 👈 SETTER NUEVO
+        this.usuarioAsignado = usuarioAsignado;
+    }
 }

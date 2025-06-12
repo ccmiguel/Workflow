@@ -6,6 +6,8 @@ import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.variable.Variables;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -53,10 +55,20 @@ public class TareaController {
     }
 
     @PostMapping("/{id}/completar")
-    public void completarTarea(@PathVariable String id, @RequestBody Map<String, Object> variables) {
+    public ResponseEntity<?> completarTarea(@PathVariable String id, @RequestBody Map<String, Object> variables) {
+        if (!variables.containsKey("aprobado")) {
+            return ResponseEntity.badRequest().body("La variable 'aprobado' es requerida.");
+        }
+
         Map<String, Object> vars = new HashMap<>();
         variables.forEach((k, v) -> vars.put(k, Variables.stringValue(v.toString())));
-        taskService.complete(id, vars);
+
+        try {
+            taskService.complete(id, vars);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al completar tarea: " + e.getMessage());
+        }
     }
 
     @PostMapping("/iniciar")
@@ -66,6 +78,7 @@ public class TareaController {
         variables.put("fechaInicio", dto.getFechaInicio().toString());
         variables.put("fechaFin", dto.getFechaFin().toString());
         variables.put("motivo", dto.getMotivo());
+        variables.put("usuarioAsignado", dto.getUsuarioAsignado());
 
         return procesoService.iniciarProceso("solicitud_vacaciones", variables);
     }

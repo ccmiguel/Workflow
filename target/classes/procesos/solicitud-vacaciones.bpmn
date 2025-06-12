@@ -20,7 +20,7 @@
 
       <bpmn:startEvent id="startEvent" name="Inicio"/>
       <bpmn:sequenceFlow id="flow1" sourceRef="startEvent" targetRef="tarea1"/>
-      <bpmn:userTask id="tarea1" name="Revisar solicitud" camunda:assignee="admin"/>
+      <bpmn:userTask id="tarea1" name="Revisar solicitud" camunda:assignee="${usuarioAsignado}"/>
       <bpmn:endEvent id="endEvent" name="Fin"/>
       <bpmn:sequenceFlow id="flow2" sourceRef="tarea1" targetRef="endEvent"/>
     </bpmn:process>
