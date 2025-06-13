@@ -55,6 +55,24 @@ public class TareaController {
         return respuesta;
     }
 
+    @GetMapping("/detalles/{id}")
+    public Map<String, Object> obtenerVariablesDeTarea(@PathVariable String id) {
+        Task tarea = taskService.createTaskQuery().taskId(id).singleResult();
+        if (tarea == null) {
+            throw new RuntimeException("Tarea no encontrada");
+        }
+
+        // Obtener variables locales y globales (según cómo se guarden)
+        Map<String, Object> variables = taskService.getVariables(tarea.getId());
+
+        // Puedes añadir el nombre o el proceso si deseas
+        variables.put("nombreTarea", tarea.getName());
+        variables.put("proceso", tarea.getProcessDefinitionId());
+
+        return variables;
+    }
+
+
     @PostMapping("/{id}/completar")
     public ResponseEntity<?> completarTarea(@PathVariable String id, @RequestBody Map<String, Object> variables) {
         if (!variables.containsKey("aprobado")) {

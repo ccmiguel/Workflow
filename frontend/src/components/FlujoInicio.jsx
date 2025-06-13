@@ -141,6 +141,15 @@ function FlujoInicio() {
       });
   };
 
+  // Nueva función para ir a la lista sin crear proceso
+    const irALaLista = () => {
+      if (!flujo) {
+        alert('Por favor selecciona un flujo primero.');
+        return;
+      }
+      navigate(`/${flujo}/${usuario}`);
+    };
+
   return (
     <div>
       <h2>Iniciar un nuevo proceso - Usuario: {usuario?.toUpperCase()}</h2>
@@ -174,6 +183,8 @@ function FlujoInicio() {
 
       <br />
       <button onClick={iniciarProceso} disabled={!flujo}>Nuevo proceso</button>
+      <button onClick={irALaLista} disabled={!flujo}>Ver lista de tareas</button>
+
     </div>
   );
 }
