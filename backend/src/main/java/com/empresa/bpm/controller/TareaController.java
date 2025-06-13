@@ -1,5 +1,6 @@
 package com.empresa.bpm.controller;
 
+import com.empresa.bpm.model.SolicitudPermisosDTO;
 import com.empresa.bpm.model.SolicitudVacacionesDTO;
 import jakarta.validation.Valid;
 import org.camunda.bpm.engine.TaskService;
@@ -71,15 +72,59 @@ public class TareaController {
         }
     }
 
-    @PostMapping("/iniciar")
-    public String iniciarProceso(@Valid @RequestBody SolicitudVacacionesDTO dto) {
+//    @PostMapping("/iniciar")
+//    public String iniciarProceso(@Valid @RequestBody SolicitudVacacionesDTO dto) {
+//        Map<String, Object> variables = new HashMap<>();
+//        variables.put("empleado", dto.getCiEmpleado());
+//        variables.put("fechaInicio", dto.getFechaInicio().toString());
+//        variables.put("fechaFin", dto.getFechaFin().toString());
+//        variables.put("motivo", dto.getMotivo());
+//        variables.put("usuarioAsignado", dto.getUsuarioAsignado());
+//
+//        return procesoService.iniciarProceso("solicitud_vacaciones", variables);
+//    }
+
+//    @PostMapping("/iniciar/{proceso}")
+//    public String iniciarProceso(
+//        @PathVariable String proceso,
+//        @Valid @RequestBody SolicitudVacacionesDTO dto) {
+//
+//        Map<String, Object> variables = new HashMap<>();
+//        variables.put("ciEmpleado", dto.getCiEmpleado());
+//        variables.put("fechaInicio", dto.getFechaInicio());
+//        variables.put("fechaFin", dto.getFechaFin());
+//        variables.put("motivo", dto.getMotivo());
+//        variables.put("usuarioAsignado", dto.getUsuarioAsignado());
+//
+//        return procesoService.iniciarProceso(proceso, variables);
+//    }
+
+    @PostMapping("/iniciar/solicitud-vacaciones")
+    public String iniciarVacaciones(@Valid @RequestBody SolicitudVacacionesDTO dto) {
         Map<String, Object> variables = new HashMap<>();
-        variables.put("empleado", dto.getCiEmpleado());
-        variables.put("fechaInicio", dto.getFechaInicio().toString());
-        variables.put("fechaFin", dto.getFechaFin().toString());
+        variables.put("ciEmpleado", dto.getCiEmpleado());
+        variables.put("fechaInicio", dto.getFechaInicio());
+        variables.put("fechaFin", dto.getFechaFin());
         variables.put("motivo", dto.getMotivo());
         variables.put("usuarioAsignado", dto.getUsuarioAsignado());
 
         return procesoService.iniciarProceso("solicitud_vacaciones", variables);
     }
+
+
+    @PostMapping("/iniciar/solicitud-permisos")
+    public String iniciarPermiso(@Valid @RequestBody SolicitudPermisosDTO dto) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("ciEmpleado", dto.getCiEmpleado());
+        variables.put("fecha", dto.getFecha());
+        variables.put("tipoPermiso", dto.getTipoPermiso());
+        variables.put("horas", dto.getHoras());
+        variables.put("justificacion", dto.getJustificacion());
+        variables.put("usuarioAsignado", dto.getUsuarioAsignado());
+
+        return procesoService.iniciarProceso("solicitud_permisos", variables);
+    }
+
+
+
 }

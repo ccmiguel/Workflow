@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  id="Definitions_2"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+
+  <bpmn:process id="solicitud_permisos" name="Solicitud de Permisos" isExecutable="true"
+  camunda:historyTimeToLive="180" camunda:versionTag="1.0.0" camunda:initiatorVariableName="initiator">
+
+    <bpmn:startEvent id="startEvent" name="Inicio"/>
+    <bpmn:sequenceFlow id="flow1" sourceRef="startEvent" targetRef="tareaRevisar"/>
+
+    <bpmn:userTask id="tareaRevisar" name="Revisar permiso" camunda:assignee="${usuarioAsignado}"/>
+    <bpmn:sequenceFlow id="flow2" sourceRef="tareaRevisar" targetRef="decisionAprobacion"/>
+
+    <bpmn:exclusiveGateway id="decisionAprobacion" name="¿Aprobado?"/>
+    <bpmn:sequenceFlow id="flow3" sourceRef="decisionAprobacion" targetRef="tareaAprobado">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${aprobado == true}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow4" sourceRef="decisionAprobacion" targetRef="tareaRechazado">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${aprobado == false}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:userTask id="tareaAprobado" name="Confirmar permiso" camunda:assignee="rrhh"/>
+    <bpmn:sequenceFlow id="flow5" sourceRef="tareaAprobado" targetRef="endEvent1"/>
+
+    <bpmn:userTask id="tareaRechazado" name="Notificar rechazo" camunda:assignee="rrhh"/>
+    <bpmn:sequenceFlow id="flow6" sourceRef="tareaRechazado" targetRef="endEvent2"/>
+
+    <bpmn:endEvent id="endEvent1" name="Fin Aprobado"/>
+    <bpmn:endEvent id="endEvent2" name="Fin Rechazado"/>
+
+  </bpmn:process>
+</bpmn:definitions>
