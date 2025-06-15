@@ -1,16 +1,3 @@
-// import React from 'react';
-// import SeleccionUsuario from './components/SeleccionUsuario';
-//
-// function App() {
-//   return (
-//     <div>
-//       <SeleccionUsuario />
-//     </div>
-//   );
-// }
-//
-// export default App;
-
 
 import React from 'react';
 import { useParams } from 'react-router-dom';
@@ -18,12 +5,14 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SeleccionUsuario from './components/SeleccionUsuario';
 import FlujoInicio from './components/FlujoInicio';
 import BandejaEntrada from './components/BandejaEntrada';
+import PantallaFlujo from './components/PantallaFlujo';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<SeleccionUsuario />} />
+        <Route path="/flujo/:flujo/:proceso" element={<PantallaFlujo />} />
         <Route path="/flujo" element={<FlujoInicio />} />
         <Route path="/:flujo/:usuario" element={<BandejaEntradaWrapper />} />
 {/*         <Route path="/:flujo&:usuario" element={<BandejaEntradaWrapper />} /> */}
@@ -34,7 +23,8 @@ function App() {
 
 // Wrapper para extraer params de la URL
 function BandejaEntradaWrapper() {
-  const { flujo, usuario } = useParams();
+//   const { flujo, usuario } = useParams();
+  const { usuario } = useParams();
   return (
     <>
       <h2>Bandeja de Entrada - {usuario.toUpperCase()}</h2>

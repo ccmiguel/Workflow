@@ -34,11 +34,11 @@ public class SolicitudVacacionesDTO {
     public String getMotivo() { return motivo; }
     public void setMotivo(String motivo) { this.motivo = motivo; }
 
-    public String getUsuarioAsignado() { // 👈 GETTER NUEVO
+    public String getUsuarioAsignado() {
         return usuarioAsignado;
     }
 
-    public void setUsuarioAsignado(String usuarioAsignado) { // 👈 SETTER NUEVO
+    public void setUsuarioAsignado(String usuarioAsignado) {
         this.usuarioAsignado = usuarioAsignado;
     }
 }
