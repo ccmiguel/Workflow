@@ -6,6 +6,7 @@ import SeleccionUsuario from './components/SeleccionUsuario';
 import FlujoInicio from './components/FlujoInicio';
 import BandejaEntrada from './components/BandejaEntrada';
 import PantallaFlujo from './components/PantallaFlujo';
+import VerificarDocumentos from './components/pantallas/VerificarDocumentos';
 
 function App() {
   return (
@@ -15,7 +16,8 @@ function App() {
         <Route path="/flujo/:flujo/:proceso" element={<PantallaFlujo />} />
         <Route path="/flujo" element={<FlujoInicio />} />
         <Route path="/:flujo/:usuario" element={<BandejaEntradaWrapper />} />
-{/*         <Route path="/:flujo&:usuario" element={<BandejaEntradaWrapper />} /> */}
+        <Route path="/flujo/F1/P3" element={<VerificarDocumentos />} /> {/* <-- Ruta explícita */}
+        {/*         <Route path="/:flujo&:usuario" element={<BandejaEntradaWrapper />} /> */}
       </Routes>
     </Router>
   );

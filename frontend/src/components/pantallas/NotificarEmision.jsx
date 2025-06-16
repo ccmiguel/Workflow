@@ -3,8 +3,7 @@ import React from "react";
 function NotificarEmision() {
   return (
     <div>
-      <h2>Notificar Emision</h2>
-      <p>Pantalla en construcción para el flujo correspondiente.</p>
+      <h2>✅ Su solicitud de permiso ha sido aprobada</h2>
     </div>
   );
 }

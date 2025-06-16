@@ -1,4 +1,5 @@
 com\empresa\bpm\service\impl\ProcesoServiceImpl.class
+com\empresa\bpm\model\FlujoSeguimiento.class
 com\empresa\bpm\repository\FlujoPasoRepository.class
 com\empresa\bpm\service\ProcesoService.class
 com\empresa\bpm\repository\FlujoSeguimientoRepository.class
@@ -9,3 +10,4 @@ com\empresa\bpm\BpmApplication.class
 com\empresa\bpm\model\SolicitudPermisosDTO.class
 com\empresa\bpm\controller\FlujoController.class
 com\empresa\bpm\model\SolicitudVacacionesDTO.class
+com\empresa\bpm\model\FlujoSeguimientoPK.class

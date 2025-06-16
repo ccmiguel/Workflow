@@ -18,13 +18,21 @@ function SeleccionUsuario() {
      trabajador: { flujo: 'solicitud_vacaciones', proceso: 'P1' }
    };
 
-   const manejarLogin = () => {
-     if (usuario && flujosIniciales[usuario]) {
-       const { flujo, proceso } = flujosIniciales[usuario];
-//        navigate(`/flujo/${flujo}/${proceso}`, { state: { usuario } });
+//    const manejarLogin = () => {
+//      if (usuario && flujosIniciales[usuario]) {
+//        const { flujo, proceso } = flujosIniciales[usuario];
+// //        navigate(`/flujo/${flujo}/${proceso}`, { state: { usuario } });
+//         navigate(`/entrada/${usuario}`);
+//      }
+//    };
+
+    const manejarLogin = () => {
+      if (usuario && flujosIniciales[usuario]) {
+        sessionStorage.setItem('rol', usuario); // Guarda el rol
+        const { flujo, proceso } = flujosIniciales[usuario];
         navigate(`/entrada/${usuario}`);
-     }
-   };
+      }
+    };
 
   return (
     <div>
@@ -35,9 +43,14 @@ function SeleccionUsuario() {
         <option value="jefe">Jefe</option>
         <option value="trabajador">Trabajador</option>
       </select>
+
       <button onClick={manejarLogin} disabled={!usuario}>Entrar</button>
     </div>
   );
 }
 
 export default SeleccionUsuario;
+
+
+
+

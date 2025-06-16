@@ -1,7 +1,9 @@
 package com.empresa.bpm.controller;
 
+import com.empresa.bpm.model.FlujoSeguimiento;
 import com.empresa.bpm.model.SolicitudPermisosDTO;
 import com.empresa.bpm.model.SolicitudVacacionesDTO;
+import com.empresa.bpm.repository.FlujoSeguimientoRepository;
 import jakarta.validation.Valid;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.task.Task;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -20,6 +23,9 @@ public class TareaController {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private FlujoSeguimientoRepository seguimientoRepository;
 
     @Autowired
     private com.empresa.bpm.service.ProcesoService procesoService;
@@ -55,6 +61,9 @@ public class TareaController {
         return respuesta;
     }
 
+    @Autowired
+    private org.camunda.bpm.engine.RuntimeService runtimeService;
+
     @GetMapping("/detalles/{id}")
     public Map<String, Object> obtenerVariablesDeTarea(@PathVariable String id) {
         Task tarea = taskService.createTaskQuery().taskId(id).singleResult();
@@ -63,7 +72,8 @@ public class TareaController {
         }
 
         // Obtener variables locales y globales (según cómo se guarden)
-        Map<String, Object> variables = taskService.getVariables(tarea.getId());
+//        Map<String, Object> variables = taskService.getVariables(tarea.getId());
+        Map<String, Object> variables = runtimeService.getVariables(tarea.getExecutionId());
 
         // Puedes añadir el nombre o el proceso si deseas
         variables.put("nombreTarea", tarea.getName());
@@ -73,22 +83,77 @@ public class TareaController {
     }
 
 
+//    @PostMapping("/{id}/completar")
+//    public ResponseEntity<?> completarTarea(@PathVariable String id, @RequestBody Map<String, Object> variables) {
+//        if (!variables.containsKey("aprobado")) {
+//            return ResponseEntity.badRequest().body("La variable 'aprobado' es requerida.");
+//        }
+//
+//        Map<String, Object> vars = new HashMap<>();
+//        variables.forEach((k, v) -> vars.put(k, Variables.stringValue(v.toString())));
+//
+//        try {
+//            taskService.complete(id, vars);
+//            return ResponseEntity.ok().build();
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al completar tarea: " + e.getMessage());
+//        }
+//    }
+
     @PostMapping("/{id}/completar")
     public ResponseEntity<?> completarTarea(@PathVariable String id, @RequestBody Map<String, Object> variables) {
         if (!variables.containsKey("aprobado")) {
             return ResponseEntity.badRequest().body("La variable 'aprobado' es requerida.");
         }
 
-        Map<String, Object> vars = new HashMap<>();
-        variables.forEach((k, v) -> vars.put(k, Variables.stringValue(v.toString())));
+        Task tarea = taskService.createTaskQuery().taskId(id).singleResult();
+        Map<String, Object> existentes = runtimeService.getVariables(tarea.getExecutionId());
 
+        variables.forEach((k, v) -> existentes.put(k, v));
+
+        // Recuperar datos necesarios
+        Object nroObj = existentes.get("nrotramite");
+        System.out.println("Variables existentes: " + existentes);
+
+        int nroTramite = 0;
+
+        if (nroObj instanceof Integer) {
+            nroTramite = (Integer) nroObj;
+        } else if (nroObj instanceof String) {
+            try {
+                nroTramite = Integer.parseInt((String) nroObj);
+            } catch (NumberFormatException e) {
+                return ResponseEntity.badRequest().body("nrotramite inválido.");
+            }
+        } else if (nroObj instanceof Long) {
+            nroTramite = ((Long) nroObj).intValue();
+        } else {
+            return ResponseEntity.badRequest().body("nrotramite no definido o con tipo inesperado.");
+        }
+        String flujo = tarea.getProcessDefinitionId(); // o "F1" si lo defines fijo
+        String proceso = tarea.getTaskDefinitionKey(); // o "P3", dependiendo de cómo lo definas
+        String usuario = tarea.getAssignee(); // quién la está completando
+        LocalDateTime fechaInicio = LocalDateTime.now().minusMinutes(5); // Simulado
+        LocalDateTime fechaFin = LocalDateTime.now();
+
+// Guardar en BD
+        FlujoSeguimiento seguimiento = new FlujoSeguimiento();
+        seguimiento.setNrotramite(nroTramite);
+        seguimiento.setFlujo(flujo);
+        seguimiento.setProceso(proceso);
+        seguimiento.setUsuario(usuario);
+        seguimiento.setFechaInicio(fechaInicio);
+        seguimiento.setFechaFin(fechaFin);
+        seguimientoRepository.save(seguimiento);
         try {
-            taskService.complete(id, vars);
+            taskService.complete(id, existentes);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al completar tarea: " + e.getMessage());
         }
     }
+
+
 
 //    @PostMapping("/iniciar")
 //    public String iniciarProceso(@Valid @RequestBody SolicitudVacacionesDTO dto) {
@@ -117,6 +182,19 @@ public class TareaController {
 //        return procesoService.iniciarProceso(proceso, variables);
 //    }
 
+//    @PostMapping("/iniciar/solicitud-vacaciones")
+//    public String iniciarVacaciones(@Valid @RequestBody SolicitudVacacionesDTO dto) {
+//        Map<String, Object> variables = new HashMap<>();
+//        variables.put("ciEmpleado", dto.getCiEmpleado());
+//        variables.put("fechaInicio", dto.getFechaInicio());
+//        variables.put("fechaFin", dto.getFechaFin());
+//        variables.put("motivo", dto.getMotivo());
+//        variables.put("usuarioAsignado", dto.getUsuarioAsignado());
+//
+//        return procesoService.iniciarProceso("solicitud_vacaciones", variables);
+//    }
+
+    @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping("/iniciar/solicitud-vacaciones")
     public String iniciarVacaciones(@Valid @RequestBody SolicitudVacacionesDTO dto) {
         Map<String, Object> variables = new HashMap<>();
@@ -126,7 +204,15 @@ public class TareaController {
         variables.put("motivo", dto.getMotivo());
         variables.put("usuarioAsignado", dto.getUsuarioAsignado());
 
+        // 🔥 Agregar el nrotramite
+        int nroTramite = generarNroTramite(); // puedes mejorar este método
+        variables.put("nrotramite", nroTramite);
+
         return procesoService.iniciarProceso("solicitud_vacaciones", variables);
+    }
+
+    private int generarNroTramite() {
+        return (int) (System.currentTimeMillis() % 100000000); // algo simple, temporalmente único
     }
 
 
@@ -142,6 +228,38 @@ public class TareaController {
 
         return procesoService.iniciarProceso("solicitud_permisos", variables);
     }
+
+    @CrossOrigin(origins = "http://localhost:5173")
+    @GetMapping("/solicitudes-vacaciones/pendientes")
+    public List<Map<String, Object>> obtenerSolicitudesVacacionesPendientes() {
+        List<Task> tareas = taskService.createTaskQuery()
+                .processDefinitionKey("solicitud_vacaciones")
+                .taskAssignee("rrhh") // o .taskCandidateGroup("rrhh") si usas grupos
+                .active()
+                .list();
+
+        List<Map<String, Object>> solicitudes = new ArrayList<>();
+        for (Task tarea : tareas) {
+            Map<String, Object> variables = taskService.getVariables(tarea.getId());
+            variables.put("taskId", tarea.getId()); // útil para luego aprobar
+            solicitudes.add(variables);
+        }
+
+        return solicitudes;
+    }
+
+    @GetMapping("/seguimiento/listar")
+    public List<FlujoSeguimiento> listarSeguimiento() {
+        return seguimientoRepository.findAll();
+    }
+
+//    @GetMapping("/tareas/seguimiento/{taskId}")
+//    public ResponseEntity<List<FlujoSeguimiento>> obtenerSeguimientoPorTarea(@PathVariable String taskId) {
+//        List<FlujoSeguimiento> seguimiento = FlujoSeguimientoRepository.findByTaskId(taskId);
+//        return ResponseEntity.ok(seguimiento);
+//    }
+
+
 
 
 
